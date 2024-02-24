@@ -1,0 +1,9 @@
+.task-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.25rem;
+}
+
+input[type="radio"] {
+  transform: scale(1.5);
+}

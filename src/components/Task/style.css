@@ -1,0 +1,20 @@
+.task {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.task-info {
+  border-bottom: 1px solid lightgray;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  padding-bottom: 0.5rem;
+}
+
+h2 {
+  font-weight: normal;
+  font-size: 18px;
+}
