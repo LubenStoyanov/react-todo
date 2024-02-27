@@ -6,10 +6,15 @@
 }
 
 .task-info {
-  border-bottom: 1px solid lightgray;
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+.task-info-wrapper {
+  border-bottom: 1px solid lightgray;
+  display: flex;
+  justify-content: space-between;
   width: 100%;
   padding-bottom: 0.5rem;
 }
@@ -17,4 +22,18 @@
 h2 {
   font-weight: normal;
   font-size: 18px;
+}
+
+.delete-btn {
+  align-self: center;
+  background-color: transparent;
+  border: none;
+  font-size: 1.25rem;
+  margin-right: 1rem;
+  padding: 0.125rem 0.5rem;
+}
+
+.delete-btn:hover {
+  transform: scale(1.1);
+  transition: scale 0.3s ease-in-out;
 }

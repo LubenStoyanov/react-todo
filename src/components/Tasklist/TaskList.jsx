@@ -1,27 +1,36 @@
+import { useEffect, useState } from "react";
 import Task from "../Task/Task";
+import { createClient } from "@libsql/client";
+
 import "./style.css";
 
-export default function TaskList() {
+var client = createClient({
+  url: import.meta.env.VITE_DB_URL,
+  authToken: import.meta.env.VITE_DB_TOKEN,
+});
+
+export default function TaskList({ forceRender, setForceRender }) {
+  var [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    async function fetchTasks() {
+      var result = await client.execute("SELECT * FROM tasks;");
+      setTasks(result.rows);
+    }
+    fetchTasks();
+  }, [forceRender]);
+
   return (
     <div className="task-list">
-      <Task
-        id={1}
-        title="dishes"
-        status={{ done: false }}
-        dueDate={"05.02.24, 14:00"}
-      />
-      <Task
-        id={2}
-        title="dishes"
-        status={{ done: false }}
-        dueDate={"05.02.24, 14:00"}
-      />
-      <Task
-        id={3}
-        title="dishes"
-        status={{ done: false }}
-        dueDate={"05.02.24, 14:00"}
-      />
+      {tasks.map((task) => (
+        <Task
+          key={task.id}
+          id={task.id}
+          title={task.title}
+          dueDate={task.dueDate.split("T").join(", ")}
+          setForceRender={setForceRender}
+        />
+      ))}
     </div>
   );
 }

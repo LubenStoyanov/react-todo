@@ -1,8 +1,11 @@
 import "./App.css";
 import TaskList from "./components/Tasklist/TaskList";
 import AddTask from "./components/AddTask/AddTask";
+import { useState } from "react";
 
 function App() {
+  var [forceRender, setForceRender] = useState(false);
+
   return (
     <div className="page-wrapper">
       <header className="header">
@@ -11,11 +14,11 @@ function App() {
 
       <main>
         <p className="completion-info">0 done • delete</p>
-        <TaskList />
+        <TaskList forceRender={forceRender} setForceRender={setForceRender} />
       </main>
 
       <footer>
-        <AddTask />
+        <AddTask setForceRender={setForceRender} />
       </footer>
     </div>
   );
