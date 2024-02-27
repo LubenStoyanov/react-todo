@@ -30,7 +30,6 @@ export default function TaskList({
     <>
       <div className="completion-info">
         <p>{completedTasks.length} done • delete</p>
-        <button className="deleteCompletedTask">delete</button>
       </div>
       <div className="task-list">
         {tasks
