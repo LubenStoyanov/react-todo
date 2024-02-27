@@ -38,18 +38,3 @@
   font-size: 2rem;
   font-weight: normal;
 }
-
-dialog {
-  margin: auto auto;
-}
-
-dialog form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 1rem;
-}
-
-button[type="submit"] {
-  margin-top: 2rem;
-}

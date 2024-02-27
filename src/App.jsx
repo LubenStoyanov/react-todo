@@ -13,7 +13,6 @@ function App() {
       </header>
 
       <main>
-        <p className="completion-info">0 done • delete</p>
         <TaskList forceRender={forceRender} setForceRender={setForceRender} />
       </main>
 

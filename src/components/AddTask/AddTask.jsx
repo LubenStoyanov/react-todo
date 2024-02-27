@@ -1,17 +1,18 @@
-import { useRef } from "react";
+import { useState } from "react";
 import "./style.css";
 
 import { createClient } from "@libsql/client";
+import Modal from "../Modal/Modal";
 
 export default function AddTask({ setForceRender }) {
-  var dialogRef = useRef(null);
+  var [showModal, setShowModal] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
     var formData = new FormData(e.target);
     var formTitle = formData.get("title");
     if (!formTitle) {
-      dialogRef.current.close();
+      setShowModal(false);
       return;
     }
     var formDueDate = formData.get("date");
@@ -30,37 +31,42 @@ export default function AddTask({ setForceRender }) {
       console.error(error);
     }
 
-    dialogRef.current.close();
+    setShowModal(false);
     setForceRender((r) => !r);
   }
 
   return (
     <>
       <div className="add-task-button-container">
-        <button
-          onClick={() => dialogRef.current.showModal()}
-          className="add-task-button"
-        >
+        <button onClick={() => setShowModal(true)} className="add-task-button">
           <div className="add-sign-wrapper">
             <span className="add-sign">+</span>
           </div>
           <p>Add Task</p>
         </button>
       </div>
-      <div>
-        <dialog ref={dialogRef} className="add-task-modal">
+      {showModal ? (
+        <Modal>
           <form onSubmit={(e) => handleSubmit(e)}>
-            <label htmlFor="title">Title</label>
-            <input type="text" name="title" id="title" />
-            <label htmlFor="date">Time and Date</label>
+            <label htmlFor="title"></label>
+            <input
+              type="text"
+              name="title"
+              id="title"
+              placeholder="title"
+              autoFocus
+            />
+            <label htmlFor="date"></label>
             <input type="dateTime-local" name="date" id="date" />
-            <button type="submit">Submit</button>
-            <button type="button" onClick={() => dialogRef.current.close()}>
-              Close
-            </button>
+            <div className="form-btns-wrapper">
+              <button type="submit">Submit</button>
+              <button type="button" onClick={() => setShowModal(false)}>
+                Close
+              </button>
+            </div>
           </form>
-        </dialog>
-      </div>
+        </Modal>
+      ) : null}
     </>
   );
 }
