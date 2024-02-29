@@ -1,24 +1,30 @@
+import NewList from "./components/NewList/NewList";
 import "./App.css";
-import TaskList from "./components/Tasklist/TaskList";
-import AddTask from "./components/AddTask/AddTask";
-import { useState } from "react";
+import { Link, useLoaderData } from "react-router-dom";
 
 function App() {
-  var [forceRender, setForceRender] = useState(false);
-
+  var rows = useLoaderData();
   return (
     <div className="page-wrapper">
-      <header className="header">
-        <h1>Tasks</h1>
-      </header>
-
-      <main>
-        <TaskList forceRender={forceRender} setForceRender={setForceRender} />
-      </main>
-
-      <footer>
-        <AddTask setForceRender={setForceRender} />
-      </footer>
+      <div>
+        <header>
+          <h1>My lists</h1>
+        </header>
+        <main>
+          <ul>
+            {rows.map((list) => (
+              <li key={list.task_list_id}>
+                <Link to={`${list.name.toLowerCase()}/${list.task_list_id}`}>
+                  {list.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </main>
+        <footer>
+          <NewList />
+        </footer>
+      </div>
     </div>
   );
 }

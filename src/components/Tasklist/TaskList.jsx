@@ -1,62 +1,62 @@
-import { useEffect, useState } from "react";
 import Task from "../Task/Task";
-import { createClient } from "@libsql/client";
+import NewTask from "../NewTask/NewTask";
 
 import "./style.css";
+import { useLoaderData } from "react-router-dom";
 
-export default function TaskList({
-  forceRender,
-  setForceRender,
-  setCompletionCount,
-}) {
-  var [tasks, setTasks] = useState([]);
-  var [completedTasks, setCompletedTasks] = useState([]);
-
-  useEffect(() => {
-    var client = createClient({
-      url: import.meta.env.VITE_DB_URL,
-      authToken: import.meta.env.VITE_DB_TOKEN,
-    });
-
-    async function fetchTasks() {
-      var result = await client.execute("SELECT * FROM tasks;");
-      setTasks(result.rows);
-    }
-    fetchTasks();
-    setCompletedTasks(tasks.filter((task) => task.status == 1));
-  }, [forceRender, tasks]);
+export default function TaskList({ name, setCompletionCount }) {
+  var rows = useLoaderData();
 
   return (
     <>
-      <div className="completion-info">
-        <p>{completedTasks.length} done • delete</p>
-      </div>
-      <div className="task-list">
-        {tasks
-          .filter((task) => task.status == 0)
-          .map((task) => (
-            <Task
-              key={task.id}
-              id={task.id}
-              title={task.title}
-              dueDate={task.dueDate.split("T").join(", ")}
-              status={task.status}
-              setForceRender={setForceRender}
-              setCompletionCount={setCompletionCount}
-            />
-          ))}
-        {completedTasks.map((task) => (
-          <Task
-            key={task.id}
-            id={task.id}
-            title={task.title}
-            dueDate={task.dueDate.split("T").join(", ")}
-            status={task.status}
-            setForceRender={setForceRender}
-            setCompletionCount={setCompletionCount}
-          />
-        ))}
-      </div>
+      <header className="header">
+        <h1>{name}</h1>
+      </header>
+      <main>
+        <div className="completion-info">
+          <p>
+            {rows.length} done •{" "}
+            {/* <span role="button" onClick={deleteCompletedTasks}> */}
+            delete
+            {/* </span> */}
+          </p>
+        </div>
+        <div className="task-list">
+          <ul>
+            {rows
+              .filter((task) => task.status == 0)
+              .map((task) => (
+                <li key={task.task_id}>
+                  <Task
+                    id={task.task_id}
+                    name={task.name}
+                    dueDate={task.due_date.split("T").join(", ")}
+                    status={task.status}
+                    listId={task.task_list_id}
+                    setCompletionCount={setCompletionCount}
+                  />
+                </li>
+              ))}
+            {rows
+              .filter((task) => task.status == 1)
+              .map((task) => (
+                <li key={task.task_id}>
+                  <Task
+                    id={task.task_id}
+                    name={task.name}
+                    dueDate={task.due_date.split("T").join(", ")}
+                    status={task.status}
+                    listId={task.task_list_id}
+                    setCompletionCount={setCompletionCount}
+                  />
+                </li>
+              ))}
+          </ul>
+        </div>
+      </main>
+      <footer>
+        <NewTask />
+      </footer>
     </>
   );
 }

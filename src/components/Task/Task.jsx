@@ -1,39 +1,37 @@
 import { useState } from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
-import "./style.css";
 import Modal from "../Modal/Modal";
-import { updateTask, updateTaskStatus, deleteTask } from "../../database";
+import { deleteTask, updateTask, updateTaskStatus } from "../../actions";
+import "./style.css";
 
-export default function Task({ id, title, dueDate, status, setForceRender }) {
+export default function Task({ id, name, dueDate, status, listId }) {
   var [showModal, setShowModal] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
     var formData = new FormData(e.target);
-    var formTitle = formData.get("title") || title;
+    var formTitle = formData.get("name") || name;
 
     var formDueDate = formData.get("date");
-    updateTask(id, formTitle, formDueDate);
+    updateTask(listId, id, formTitle, formDueDate);
 
     setShowModal(false);
-    setForceRender((r) => !r);
   }
 
   return (
     <>
       <div className="task">
         <input
-          type="radio"
+          type="checkbox"
           name={id}
-          onChange={(e) => {
-            updateTaskStatus(id, status, e);
-            setForceRender((r) => !r);
+          onChange={() => {
+            updateTaskStatus(listId, id, status);
           }}
           checked={status}
         />
         <div className="task-info-wrapper">
           <div className="task-info">
-            <h2>{title}</h2>
+            <h2>{name}</h2>
             <time>{dueDate}</time>
           </div>
           <div className="buttons-wrapper">
@@ -42,8 +40,7 @@ export default function Task({ id, title, dueDate, status, setForceRender }) {
             </button>
             <button
               onClick={() => {
-                deleteTask(id);
-                setForceRender((r) => !r);
+                deleteTask(listId, id);
               }}
               className="delete-btn"
             >
@@ -55,12 +52,12 @@ export default function Task({ id, title, dueDate, status, setForceRender }) {
       {showModal ? (
         <Modal>
           <form onSubmit={(e) => handleSubmit(e)}>
-            <label htmlFor="title"></label>
+            <label htmlFor="name"></label>
             <input
               type="text"
-              name="title"
-              id="title"
-              placeholder="title"
+              name="name"
+              id="name"
+              placeholder="name"
               autoFocus
             />
             <label htmlFor="date"></label>

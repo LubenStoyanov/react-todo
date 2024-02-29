@@ -7,3 +7,17 @@
 input[type="radio"] {
   transform: scale(1.5);
 }
+
+header {
+  padding: 3rem 0 0 1.25rem;
+}
+
+main {
+  padding: 3rem 0 0 1.25rem;
+  padding-top: 1.5rem;
+}
+
+.completion-info {
+  border-bottom: 1px solid lightgray;
+  padding-bottom: 0.5rem;
+}
