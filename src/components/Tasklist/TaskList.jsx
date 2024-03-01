@@ -1,21 +1,30 @@
+import { useLoaderData, useParams, Link } from "react-router-dom";
 import Task from "../Task/Task";
 import NewTask from "../NewTask/NewTask";
-
+import { FaChevronLeft } from "react-icons/fa6";
 import "./style.css";
-import { useLoaderData } from "react-router-dom";
 
-export default function TaskList({ name, setCompletionCount }) {
+export default function TaskList() {
   var rows = useLoaderData();
+  var { listName } = useParams();
+  var completedTasks = rows.filter((task) => task.status == 1);
 
   return (
     <>
-      <header className="header">
-        <h1>{name}</h1>
+      <header className="list-header">
+        <Link to="/">
+          <button>
+            <div className="header-btn-wrapper">
+              <FaChevronLeft /> <p>lists</p>
+            </div>
+          </button>
+        </Link>
+        <h1>{listName}</h1>
       </header>
-      <main>
+      <main className="list-main">
         <div className="completion-info">
           <p>
-            {rows.length} done •{" "}
+            {completedTasks.length} done •{" "}
             {/* <span role="button" onClick={deleteCompletedTasks}> */}
             delete
             {/* </span> */}
@@ -33,28 +42,24 @@ export default function TaskList({ name, setCompletionCount }) {
                     dueDate={task.due_date.split("T").join(", ")}
                     status={task.status}
                     listId={task.task_list_id}
-                    setCompletionCount={setCompletionCount}
                   />
                 </li>
               ))}
-            {rows
-              .filter((task) => task.status == 1)
-              .map((task) => (
-                <li key={task.task_id}>
-                  <Task
-                    id={task.task_id}
-                    name={task.name}
-                    dueDate={task.due_date.split("T").join(", ")}
-                    status={task.status}
-                    listId={task.task_list_id}
-                    setCompletionCount={setCompletionCount}
-                  />
-                </li>
-              ))}
+            {completedTasks.map((task) => (
+              <li key={task.task_id}>
+                <Task
+                  id={task.task_id}
+                  name={task.name}
+                  dueDate={task.due_date.split("T").join(", ")}
+                  status={task.status}
+                  listId={task.task_list_id}
+                />
+              </li>
+            ))}
           </ul>
         </div>
       </main>
-      <footer>
+      <footer className="list-footer">
         <NewTask />
       </footer>
     </>

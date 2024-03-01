@@ -13,8 +13,8 @@ export default function Task({ id, name, dueDate, status, listId }) {
     var formTitle = formData.get("name") || name;
 
     var formDueDate = formData.get("date");
-    updateTask(listId, id, formTitle, formDueDate);
 
+    updateTask(listId, id, formTitle, formDueDate);
     setShowModal(false);
   }
 

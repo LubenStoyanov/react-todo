@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { createClient } from "@libsql/client";
 import Modal from "../Modal/Modal";
 import "./style.css";
+import { createList } from "../../actions";
 
 export default function NewList() {
   var [showModal, setShowModal] = useState(false);
@@ -15,20 +15,7 @@ export default function NewList() {
       return;
     }
 
-    var client = createClient({
-      url: import.meta.env.VITE_DB_URL,
-      authToken: import.meta.env.VITE_DB_TOKEN,
-    });
-
-    try {
-      await client.execute({
-        sql: "INSERT INTO task_lists (name) VALUES (:name)",
-        args: { name: formName },
-      });
-    } catch (error) {
-      console.error(error);
-    }
-
+    createList(formName);
     setShowModal(false);
   }
 

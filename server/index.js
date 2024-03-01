@@ -3,6 +3,12 @@ import cors from "cors";
 import "dotenv/config";
 import { createClient } from "@libsql/client";
 
+var clientDB = createClient({
+  // eslint-disable-next-line no-undef
+  url: process.env.DB_URL,
+  // eslint-disable-next-line no-undef
+  authToken: process.env.DB_TOKEN,
+});
 var app = express();
 var port = 5000;
 
@@ -11,32 +17,51 @@ app.use(express.json());
 
 app.get("/api/v1", async (_, res) => {
   try {
-    var client = createClient({
-      // eslint-disable-next-line no-undef
-      url: process.env.DB_URL,
-      // eslint-disable-next-line no-undef
-      authToken: process.env.DB_TOKEN,
-    });
-
-    var result = await client.execute("SELECT * FROM task_lists;");
+    var result = await clientDB.execute("SELECT * FROM task_lists;");
     res.json(result.rows);
   } catch (error) {
     console.error(error);
   }
 });
 
-app.get("/api/v1/:list", async (req, res) => {
-  var listName = req.params.list;
+app.post("/api/v1/createList", async (req, res) => {
+  var { name } = req.body;
 
   try {
-    var client = createClient({
-      // eslint-disable-next-line no-undef
-      url: process.env.DB_URL,
-      // eslint-disable-next-line no-undef
-      authToken: process.env.DB_TOKEN,
+    await clientDB.execute({
+      sql: "INSERT INTO task_lists (name) VALUES (:name)",
+      args: { name: name },
+    });
+    res.sendStatus(201);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.post("/api/v1/createTask", async (req, res) => {
+  var { name, dueDate, listId } = req.body;
+
+  try {
+    await clientDB.execute({
+      sql: "INSERT INTO tasks (name, due_date, task_list_id) VALUES (:name, :dueDate, :taskId)",
+      args: {
+        name: name,
+        dueDate: dueDate,
+        taskId: listId,
+      },
     });
 
-    var result = await client.execute({
+    res.sendStatus(201);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.get("/api/v1/:listName", async (req, res) => {
+  var { listName } = req.params;
+
+  try {
+    var result = await clientDB.execute({
       sql: `
         SELECT tasks.*
         FROM tasks
@@ -52,78 +77,49 @@ app.get("/api/v1/:list", async (req, res) => {
   }
 });
 
-app.delete("/api/v1/:task_list_id/:task_id", async (req, res) => {
-  var listId = req.params.task_list_id;
-  var taskId = req.params.task_id;
-  console.log(listId, taskId);
+app.delete("/api/v1/:listId/:taskId", async (req, res) => {
+  var { taskId, listId } = req.params;
 
   try {
-    var client = createClient({
-      // eslint-disable-next-line no-undef
-      url: process.env.DB_URL,
-      // eslint-disable-next-line no-undef
-      authToken: process.env.DB_TOKEN,
-    });
-
-    var result = await client.execute({
+    var result = await clientDB.execute({
       sql: "DELETE FROM tasks WHERE task_id = (:taskId) AND task_list_id = (:listId)",
       args: { taskId: taskId, listId: listId },
     });
-    console.log(result);
     res.json(result);
   } catch (error) {
     console.error(error);
   }
 });
 
-app.put("/api/v1/:task_list_id/:task_id", async (req, res) => {
-  var taskId = req.params.task_id;
-  var taskListId = req.params.task_list_id;
-  var status = req.body.status;
+app.put("/api/v1/:listId/:taskId", async (req, res) => {
+  var { taskId, listId } = req.params;
+  var { status } = req.body;
 
   try {
-    var client = createClient({
-      // eslint-disable-next-line no-undef
-      url: process.env.DB_URL,
-      // eslint-disable-next-line no-undef
-      authToken: process.env.DB_TOKEN,
+    var result = await clientDB.execute({
+      sql: "UPDATE tasks SET status = (:status) WHERE task_id = (:taskId) AND task_list_id = (:listId)",
+      args: { taskId: taskId, listId: listId, status: status ? 0 : 1 },
     });
-
-    var result = await client.execute({
-      sql: "UPDATE tasks SET status = (:status) WHERE task_id = (:taskId) AND task_list_id = (:taskListId)",
-      args: { taskId: taskId, taskListId: taskListId, status: status ? 0 : 1 },
-    });
-    console.log(result);
     res.json(result);
   } catch (error) {
     console.error(error);
   }
 });
 
-app.put("/api/v1/update/:task_list_id/:task_id", async (req, res) => {
-  var taskId = req.params.task_id;
-  var taskListId = req.params.task_list_id;
-  var name = req.body.name;
-  var dueDate = req.body.dueDate;
+app.put("/api/v1/update/:listId/:taskId", async (req, res) => {
+  var { taskId, listId } = req.params;
+  var { name, dueDate } = req.body;
 
   try {
-    var client = createClient({
-      // eslint-disable-next-line no-undef
-      url: process.env.DB_URL,
-      // eslint-disable-next-line no-undef
-      authToken: process.env.DB_TOKEN,
-    });
-
-    var result = await client.execute({
-      sql: "UPDATE tasks SET name = (:name), due_date = (:dueDate) WHERE task_id = (:taskId) AND task_list_id = (:taskListId)",
+    var result = await clientDB.execute({
+      sql: "UPDATE tasks SET name = (:name), due_date = (:dueDate) WHERE task_id = (:taskId) AND task_list_id = (:listId)",
       args: {
         taskId: taskId,
-        taskListId: taskListId,
+        listId: listId,
         name: name,
         dueDate: dueDate,
       },
     });
-    console.log("update task", result);
     res.json(result);
   } catch (error) {
     console.error(error);

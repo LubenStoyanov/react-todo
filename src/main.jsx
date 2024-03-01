@@ -13,7 +13,7 @@ var router = createBrowserRouter([
     loader: appLoader,
   },
   {
-    path: "/:listName/:id",
+    path: "/:listName/:listId",
     element: <TaskList />,
     loader: taskListLoader,
     // action: taskAction,

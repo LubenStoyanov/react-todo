@@ -9,11 +9,11 @@ button {
   font-size: 1.5rem;
 }
 
-header {
+.app-header {
   padding: 3rem 0 0 1.25rem;
 }
 
-main {
+.app-main {
   padding: 3rem 0 0 1.25rem;
   padding-top: 1.5rem;
 }
