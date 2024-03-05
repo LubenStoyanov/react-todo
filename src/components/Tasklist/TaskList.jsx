@@ -1,14 +1,23 @@
-import { useLoaderData, useParams, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Task from "../Task/Task";
 import NewTask from "../NewTask/NewTask";
 import { FaChevronLeft } from "react-icons/fa6";
 import "./style.css";
+import { useQuery } from "react-query";
+import { taskListLoader } from "../../loaders";
 
 export default function TaskList() {
-  var rows = useLoaderData();
   var { listName } = useParams();
-  var completedTasks = rows.filter((task) => task.status == 1);
+  var query = useQuery({
+    queryKey: ["tasks", listName],
+    queryFn: taskListLoader,
+  });
 
+  if (query.isLoading) {
+    return <h1>...isLoading</h1>;
+  }
+
+  var completedTasks = query.data.filter((task) => task.status == 1);
   return (
     <>
       <header className="list-header">
@@ -30,9 +39,9 @@ export default function TaskList() {
             {/* </span> */}
           </p>
         </div>
-        <div className="task-list">
+        <div className="task-list-wrapper">
           <ul>
-            {rows
+            {query.data
               .filter((task) => task.status == 0)
               .map((task) => (
                 <li key={task.task_id}>

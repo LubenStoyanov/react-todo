@@ -9,11 +9,16 @@ var clientDB = createClient({
   // eslint-disable-next-line no-undef
   authToken: process.env.DB_TOKEN,
 });
+
 var app = express();
 var port = 5000;
 
 app.use(cors());
 app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Hello");
+})
 
 app.get("/api/v1", async (_, res) => {
   try {

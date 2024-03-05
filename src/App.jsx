@@ -1,9 +1,15 @@
-import { Link, useLoaderData } from "react-router-dom";
+import { Link } from "react-router-dom";
 import NewList from "./components/NewList/NewList";
 import "./App.css";
+import { useQuery } from "react-query";
+import { appLoader } from "./loaders";
 
 function App() {
-  var rows = useLoaderData();
+  var query = useQuery({ queryKey: ["lists"], queryFn: () => appLoader() });
+
+  if (query.isLoading) {
+    return <h1>...loading</h1>;
+  }
 
   return (
     <div className="page-wrapper">
@@ -12,7 +18,7 @@ function App() {
       </header>
       <main className="app-main">
         <ul>
-          {rows.map((list) => (
+          {query.data.map((list) => (
             <li key={list.task_list_id}>
               <Link to={`${list.name.toLowerCase()}/${list.task_list_id}`}>
                 {list.name}

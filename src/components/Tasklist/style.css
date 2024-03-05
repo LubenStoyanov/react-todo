@@ -21,7 +21,7 @@
   padding-bottom: 0.5rem;
 }
 
-.task-list {
+.task-list-wrapper {
   display: flex;
   flex-direction: column;
   margin-top: 0.25rem;
