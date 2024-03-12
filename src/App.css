@@ -42,3 +42,21 @@ a:visited {
 li {
   list-style-type: none;
 }
+
+.add-task-button-container {
+  position: fixed;
+  bottom: 0;
+  height: 3.5rem;
+  width: 100%;
+  padding-left: 1.25rem;
+}
+
+.add-sign-wrapper {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.add-sign-wrapper p {
+  font-weight: bold;
+}

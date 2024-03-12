@@ -2,6 +2,7 @@ import { useState } from "react";
 import Modal from "../Modal/Modal";
 import "./style.css";
 import { createList } from "../../actions";
+import { FaCirclePlus } from "react-icons/fa6";
 
 export default function NewList() {
   var [showModal, setShowModal] = useState(false);
@@ -24,9 +25,9 @@ export default function NewList() {
       <div className="add-task-button-container">
         <button onClick={() => setShowModal(true)} className="add-task-button">
           <div className="add-sign-wrapper">
-            <span className="add-sign">+</span>
+            <FaCirclePlus />
+            <p>New List</p>
           </div>
-          <p>New List</p>
         </button>
       </div>
       {showModal ? (

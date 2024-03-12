@@ -5,7 +5,7 @@ import { useQuery } from "react-query";
 import { appLoader } from "./loaders";
 
 function App() {
-  var query = useQuery({ queryKey: ["lists"], queryFn: () => appLoader() });
+  var query = useQuery({ queryKey: ["lists"], queryFn: appLoader });
 
   if (query.isLoading) {
     return <h1>...loading</h1>;
